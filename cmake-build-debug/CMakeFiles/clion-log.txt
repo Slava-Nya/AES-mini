@@ -1,0 +1,14 @@
+/opt/clion-2022.1.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/opt/clion-2022.1.1/bin/ninja/linux/ninja -G Ninja -S /home/nikitenko/CLionProjects/AES-mini -B /home/nikitenko/CLionProjects/AES-mini/cmake-build-debug
+-- The ASM_NASM compiler identification is unknown
+-- Didn't find assembler
+CMake Error at CMakeLists.txt:7 (enable_language):
+  No CMAKE_ASM_NASM_COMPILER could be found.
+
+  Tell CMake where to find the compiler by setting either the environment
+  variable "ASM_NASM" or the CMake cache entry CMAKE_ASM_NASM_COMPILER to the
+  full path to the compiler, or to the compiler name if it is in the PATH.
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/nikitenko/CLionProjects/AES-mini/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+See also "/home/nikitenko/CLionProjects/AES-mini/cmake-build-debug/CMakeFiles/CMakeError.log".
