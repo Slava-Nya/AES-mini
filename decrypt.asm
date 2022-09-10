@@ -1,5 +1,5 @@
 BITS 64
-global main
+global decrypt
 
 %macro  genkey 1-2
 	aeskeygenassist xmm2, xmm1, %1 ; round 2
@@ -8,7 +8,7 @@ global main
 %endmacro
 
 start:
-	jmp main
+	jmp decrypt
 
 key_expansion_128: ; expand key from xmm2
 	pshufd xmm2, xmm2, 0xff ; "shuffle packed double word"
@@ -21,44 +21,14 @@ key_expansion_128: ; expand key from xmm2
 	pxor xmm1, xmm2
 	ret
 
-main:
-	mov r13, 0xdeadbeef ; HARD CODED new entry point
-	mov r12, 0xdeadbeef ; HARD CODED text length
-	mov r11, 0xdeadbeef ; HARD CODED text offset
-	mov r9, 0xdeadbeefdeadbeef ; HARD CODED first part of the key
-	mov r8, 0xdeadbeefdeadbeef ; HARD CODED second part of th ekey
-	movq xmm1, r9
-	movq xmm2, r8
-	movlhps xmm1, xmm2 ; 0x00000000ffffffff to 0xffffffff00000000
-	; get virt address
-	lea rdi, [ rel start ]
-	neg r13
-	add rdi, r13 ; begining of the elf
-	add rdi, r11 ; begining of the .text WORKING
-	; align rdi for mprotect
-	mov r10, rdi;
-	and rdi, -0x1000;
-	; get the alignement
-	neg rdi
-	add r10, rdi
-	neg rdi
-	add r12, r10 ; text length + alignement
-	; mprotect
-	mov rax, 0xa ; syscall mprotect
-	mov rsi, r12 ; length page_size maybe more next time ? HARD CODED
-	mov rdx, 0x07 ; protection
-	syscall
+; encrypt(char *key, char *value, size_t len)
+;				rdi,	rsi			rdx
 
-
-	; initialize for the loop
-	add rdi, r10 ; come bactk to the start of .text
-	neg r10
-	add r12, r10 ; come back to the original r12, code length
-
-	; aes thing
-	mov rsi, rdi; section offset
-	mov rdx, r12; section len
+decrypt:
+    push rbx
+	movdqu xmm1, [rdi] ; move key in xmm0
 	movdqu xmm0, xmm1 ; move key in xmm0
+	; aes thing
 	genkey 0x1, xmm4
 	genkey 0x2, xmm5
 	genkey 0x4, xmm6
@@ -101,10 +71,6 @@ perform:
 	add rdi, 0x10
 	jmp begin_loop
 
-end: ; reset our variables
-	xor rax, rax
-	xor rdi, rdi
-	xor rsi, rsi
-	xor rdx, rdx
-	xor r14, r14
-	xor rcx, rcx
+end:
+	pop rbx
+	ret

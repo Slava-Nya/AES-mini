@@ -1,16 +1,8 @@
-#define _AES_H_
+//
+// Created by nikitenko on 07.08.22.
+//
 
-#include <stdint.h>
-#include <stddef.h>
+#ifndef AES_H
+#define AES_H
 
-#define AES_BLOCKLEN 16 // Block length in bytes - AES is 128b block only
-#define AES_KEYLEN 16   // Key length in bytes
-#define AES_keyExpSize 176
-
-
-struct AES_ctx
-{
-	uint8_t RoundKey[AES_keyExpSize];
-	uint8_t Iv[AES_BLOCKLEN];
-};
-
+#endif //AES_H
